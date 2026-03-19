@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solfaia Community</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0f;--bg2:#12121a;--card:#1a1a24;--hover:#22222e;--text:#f0f0f5;--text2:#8888a0;--accent:#ff6b35;--border:#2a2a3a;--success:#22c55e}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.auth-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;width:100%;max-width:400px}
+.auth-card h1{text-align:center;margin-bottom:8px;font-size:28px}
+.subtitle{text-align:center;color:var(--text2);margin-bottom:24px}
+.auth-tabs{display:flex;gap:10px;margin-bottom:24px}
+.auth-tab{flex:1;padding:10px;border:none;background:var(--hover);color:var(--text2);border-radius:8px;cursor:pointer}
+.auth-tab.active{background:var(--accent);color:#fff}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;margin-bottom:6px;color:var(--text2);font-size:14px}
+.form-group input,select{width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:14px}
+.btn{width:100%;padding:14px;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;transition:transform .2s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{transform:translateY(-2px)}
+.btn-secondary{background:var(--hover);color:var(--text);margin-top:10px}
+.dashboard{display:none;min-height:100vh}
+.dashboard.active{display:block}
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo{font-size:20px;font-weight:700;background:linear-gradient(135deg,#ff6b35,#ff8c5a);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header-right{display:flex;align-items:center;gap:10px}
+.avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--accent);cursor:pointer}
+.avatar-lg{width:80px;height:80px}
+.nav{display:flex;gap:4px;padding:10px 20px;background:var(--bg2);overflow-x:auto}
+.nav-item{padding:8px 16px;border-radius:8px;color:var(--text2);cursor:pointer;white-space:nowrap;font-size:14px}
+.nav-item:hover{background:var(--hover)}
+.nav-item.active{background:var(--accent);color:#fff}
+.main{padding:20px;max-width:1200px;margin:0 auto}
+.section{display:none}
+.section.active{display:block}
+.activity-feed{display:flex;flex-direction:column;gap:12px}
+.activity-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;align-items:center;gap:12px}
+.activity-content{flex:1}
+.activity-user{font-weight:600}
+.activity-action{color:var(--text2);font-size:14px}
+.activity-points{color:var(--accent);font-weight:600}
+.activity-time{color:#555;font-size:12px}
+.leaderboard{display:flex;flex-direction:column;gap:8px}
+.leaderboard-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;align-items:center;gap:12px}
+.leaderboard-rank{font-size:20px;font-weight:700;width:40px;text-align:center}
+.leaderboard-rank.gold{color:#ffd700}
+.leaderboard-rank.silver{color:#c0c0c0}
+.leaderboard-rank.bronze{color:#cd7f32}
+.leaderboard-info{flex:1}
+.leaderboard-name{font-weight:600;display:flex;align-items:center;gap:8px}
+.leaderboard-xp{color:var(--text2);font-size:14px}
+.leaderboard-level{background:var(--accent);color:#fff;padding:2px 8px;border-radius:10px;font-size:12px}
+.profile-header{text-align:center;margin-bottom:24px}
+.profile-avatar{width:100px;height:100px;border-radius:50%;border:3px solid var(--accent);margin-bottom:12px;cursor:pointer}
+.profile-name{font-size:24px;font-weight:700}
+.profile-username{color:var(--text2);margin-bottom:8px}
+.profile-stats{display:flex;justify-content:center;gap:24px;margin:20px 0}
+.profile-stat{text-align:center}
+.profile-stat-value{font-size:24px;font-weight:700;color:var(--accent)}
+.profile-stat-label{font-size:12px;color:#555}
+.settings-section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+.settings-section h3{margin-bottom:16px}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+.toggle-row:last-child{border:none}
+.toggle{width:50px;height:26px;background:var(--hover);border-radius:13px;position:relative;cursor:pointer}
+.toggle.active{background:var(--accent)}
+.toggle::after{content:'';width:22px;height:22px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:transform .2s}
+.toggle.active::after{transform:translateX(24px)}
+.vacation-banner{background:linear-gradient(135deg,#ff6b35,#ff8c5a);color:#fff;padding:16px;border-radius:12px;margin-bottom:20px;display:none}
+.vacation-banner.active{display:block}
+.notification-banner{position:fixed;top:20px;right:20px;background:var(--card);border:2px solid var(--accent);border-radius:12px;padding:16px;display:flex;align-items:center;gap:12px;z-index:1000;transform:translateX(400px);transition:transform .3s;max-width:350px}
+.notification-banner.show{transform:translateX(0)}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--card);border-left:4px solid var(--accent);padding:14px 20px;border-radius:8px;transform:translateY(100px);opacity:0;transition:all .3s;z-index:9999}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.success{border-color:var(--success)}
+.quick-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px}
+.quick-action{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:all .2s}
+.quick-action:hover{border-color:var(--accent);transform:translateY(-2px)}
+.quick-action-icon{font-size:32px;margin-bottom:8px}
+.quick-action-label{font-weight:600}
+.quick-action-points{color:var(--accent);font-size:14px}
+.partner-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center}
+.partner-status{display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;margin-top:8px}
+.partner-status.connected{background:var(--success);color:#fff}
+.partner-status.pending{background:#ffd93d;color:#000}
+.partner-status.none{background:var(--hover);color:var(--text2)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px}
+.modal-overlay.active{display:flex}
+.modal{background:var(--card);border-radius:16px;padding:24px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto}
+.modal h2{margin-bottom:16px}
+.modal-close{float:right;background:none;border:none;color:var(--text2);cursor:pointer;font-size:24px}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div id="auth-screen" class="auth-screen">
+<div class="auth-card">
+<h1>🔥 Solfaia</h1>
+<p class="subtitle">Accountability Community</p>
+<div class="auth-tabs">
+<button class="auth-tab active" onclick="showAuthTab('login')">Login</button>
+<button class="auth-tab" onclick="showAuthTab('register')">Register</button>
+</div>
+<form id="login-form" onsubmit="handleLogin(event)">
+<div class="form-group"><label>Email</label><input type="email" id="login-email" required></div>
+<div class="form-group"><label>Password</label><input type="password" id="login-password" required></div>
+<button type="submit" class="btn btn-primary">Enter Community</button>
+<button type="button" class="btn btn-secondary" onclick="showForgotPassword()">Forgot Password?</button>
+</form>
+<form id="register-form" class="hidden" onsubmit="handleRegister(event)">
+<div class="form-group"><label>Username</label><input type="text" id="register-username" required minlength="3"></div>
+<div class="form-group"><label>Display Name</label><input type="text" id="register-name" required></div>
+<div class="form-group"><label>Email</label><input type="email" id="register-email" required></div>
+<div class="form-group"><label>Password</label><input type="password" id="register-password" required minlength="6"></div>
+<button type="submit" class="btn btn-primary">Create Account</button>
+</form>
+<form id="forgot-form" class="hidden" onsubmit="handleForgotPassword(event)">
+<div class="form-group"><label>Email</label><input type="email" id="forgot-email" required></div>
+<button type="submit" class="btn btn-primary">Send Reset Code</button>
+<button type="button" class="btn btn-secondary" onclick="showAuthTab('login')">Back to Login</button>
+</form>
+</div>
+</div>
+<div id="dashboard" class="dashboard">
+<div id="vacation-banner" class="vacation-banner">🌴 You're on vacation until <span id="vacation-end"></span> - Enjoy!</div>
+<header class="header">
+<span class="logo">🔥 Solfaia</span>
+<div class="header-right">
+<button onclick="showSection('feed')" class="nav-item">🏠</button>
+<button onclick="showSection('leaderboard')" class="nav-item">🏆</button>
+<img id="header-avatar" class="avatar" onclick="showSection('profile')" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👤</text></svg>">
+<button onclick="logout()" style="background:none;border:none;cursor:pointer;font-size:18px;">🚪</button>
+</div>
+</header>
+<nav class="nav">
+<div class="nav-item active" onclick="showSection('feed')" data-section="feed">🏠 Feed</div>
+<div class="nav-item" onclick="showSection('leaderboard')" data-section="leaderboard">🏆 Leaderboard</div>
+<div class="nav-item" onclick="showSection('quick')" data-section="quick">⚡ Quick Actions</div>
+<div class="nav-item" onclick="showSection('partner')" data-section="partner">🤝 Partner</div>
+<div class="nav-item" onclick="showSection('profile')" data-section="profile">👤 Profile</div>
+<div class="nav-item" onclick="showSection('settings')" data-section="settings">⚙️ Settings</div>
+</nav>
+<main class="main">
+<section id="section-feed" class="section active">
+<h2 style="margin-bottom:16px">🔥 Community Activity</h2>
+<div id="activity-feed" class="activity-feed"></div>
+</section>
+<section id="section-leaderboard" class="section">
+<h2 style="margin-bottom:16px">🏆 Leaderboard</h2>
+<div class="leaderboard" id="leaderboard-list"></div>
+</section>
+<section id="section-quick" class="section">
+<h2 style="margin-bottom:16px">⚡ Log Activity</h2>
+<div class="quick-actions">
+<div class="quick-action" onclick="logActivity('task',15)"><div class="quick-action-icon">✅</div><div class="quick-action-label">Task Done</div><div class="quick-action-points">+15 XP</div></div>
+<div class="quick-action" onclick="logActivity('task-urgent',25)"><div class="quick-action-icon">🔥</div><div class="quick-action-label">Urgent Task</div><div class="quick-action-points">+25 XP</div></div>
+<div class="quick-action" onclick="logActivity('kt',75)"><div class="quick-action-icon">✨</div><div class="quick-action-label">KT Manifestation</div><div class="quick-action-points">+75 XP</div></div>
+<div class="quick-action" onclick="logActivity('affirmation',50)"><div class="quick-action-icon">💪</div><div class="quick-action-label">Affirmations</div><div class="quick-action-points">+50 XP</div></div>
+<div class="quick-action" onclick="logActivity('journal',15)"><div class="quick-action-icon">📝</div><div class="quick-action-label">Journal</div><div class="quick-action-points">+15 XP</div></div>
+<div class="quick-action" onclick="logActivity('dream',20)"><div class="quick-action-icon">💭</div><div class="quick-action-label">Dream Logged</div><div class="quick-action-points">+20 XP</div></div>
+</div>
+</section>
+<section id="section-partner" class="section">
+<h2 style="margin-bottom:16px">🤝 Accountability Partner</h2>
+<div class="partner-card" style="margin-bottom:16px">
+<img id="partner-avatar" class="avatar avatar-lg" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👥</text></svg>">
+<h3 id="partner-name" style="margin:12px 0 4px">No Partner</h3>
+<p id="partner-status" class="partner-status none">Not Connected</p>
+<button id="partner-btn" class="btn btn-primary" style="margin-top:16px" onclick="openPartnerModal()">Find Partner</button>
+</div>
+<div class="settings-section">
+<h3>🔒 Sharing Settings</h3>
+<div class="toggle-row"><span>Show my tasks</span><div class="toggle active" onclick="toggleShare(this)"></div></div>
+<div class="toggle-row"><span>Show my journal</span><div class="toggle" onclick="toggleShare(this)"></div></div>
+<div class="toggle-row"><span>Show my dreams</span><div class="toggle" onclick="toggleShare(this)"></div></div>
+<div class="toggle-row"><span>Show last activity time</span><div class="toggle active" onclick="toggleShare(this)"></div></div>
+</div>
+</section>
+<section id="section-profile" class="section">
+<div class="profile-header">
+<label for="avatar-upload"><img id="profile-avatar" class="profile-avatar" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👤</text></svg>"></label>
+<input type="file" id="avatar-upload" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
+<h2 id="profile-name" class="profile-name">Your Name</h2>
+<p id="profile-username" class="profile-username">@username</p>
+<div class="profile-stats">
+<div class="profile-stat"><div id="profile-xp" class="profile-stat-value">0</div><div class="profile-stat-label">XP</div></div>
+<div class="profile-stat"><div id="profile-level" class="profile-stat-value">1</div><div class="profile-stat-label">Level</div></div>
+<div class="profile-stat"><div id="profile-streak" class="profile-stat-value">0</div><div class="profile-stat-label">Day Streak</div></div>
+</div>
+</div>
+<div class="settings-section">
+<h3>Edit Profile</h3>
+<div class="form-group"><label>Display Name</label><input type="text" id="edit-name" onchange="updateProfile()"></div>
+<div class="form-group"><label>Username</label><input type="text" id="edit-username" onchange="updateProfile()"></div>
+</div>
+</section>
+<section id="section-settings" class="section">
+<h2 style="margin-bottom:16px">⚙️ Settings</h2>
+<div class="settings-section">
+<h3>🔔 Notifications</h3>
+<div class="toggle-row"><span>Show community notifications</span><div class="toggle active" onclick="toggleSetting(this,'notifications')"></div></div>
+<div class="toggle-row"><span>Sound effects</span><div class="toggle" onclick="toggleSetting(this,'sound')"></div></div>
+</div>
+<div class="settings-section">
+<h3>🌴 Vacation Mode</h3>
+<p style="color:var(--text2);margin-bottom:12px">Take a break - you won't be kicked!</p>
+<div class="toggle-row"><span>Enable vacation</span><div class="toggle" onclick="toggleVacation(this)"></div></div>
+<div id="vacation-days" class="form-group hidden" style="margin-top:12px"><label>Days away</label><select id="vacation-duration" onchange="setVacationDuration()"><option value="7">7 days</option><option value="14">14 days</option><option value="21">21 days</option></select></div>
+</div>
+<div class="settings-section">
+<h3>🔒 Privacy</h3>
+<div class="toggle-row"><span>Appear in leaderboard</span><div class="toggle active" onclick="toggleSetting(this,'leaderboard')"></div></div>
+<div class="toggle-row"><span>Show in activity feed</span><div class="toggle active" onclick="toggleSetting(this,'feed')"></div></div>
+</div>
+<button class="btn btn-secondary" onclick="logout()">🚪 Logout</button>
+</section>
+</main>
+</div>
+<div id="notification" class="notification-banner">
+<img class="avatar" src="" id="notif-avatar">
+<div class="notification-content"><div class="notification-name" id="notif-name"></div><div class="notification-action" id="notif-action"></div></div>
+<div class="notification-points" id="notif-points"></div>
+</div>
+<div id="toast" class="toast"></div>
+<div id="partner-modal" class="modal-overlay">
+<div class="modal"><button class="modal-close" onclick="closePartnerModal()">×</button>
+<h2>🤝 Find Partner</h2>
+<div class="form-group"><label>Search by username</label><input type="text" id="partner-search" placeholder="Enter username"></div>
+<button class="btn btn-primary" onclick="searchPartner()">Search</button>
+<div id="partner-search-result" class="hidden" style="margin-top:20px;text-align:center"><img id="search-result-avatar" class="avatar avatar-lg" src=""><h3 id="search-result-name" style="margin:12px 0 4px"></h3><p id="search-result-username" style="color:var(--text2)"></p><button class="btn btn-primary" style="margin-top:12px" onclick="sendPartnerRequest()">Send Request</button></div>
+</div>
+</div>
+<script>
+var currentUser=null;
+var activityIcons={task:'✅','task-urgent':'🔥',kt:'✨',affirmation:'💪',journal:'📝',dream:'💭'};
+var defaultPfp='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">👤</text></svg>';
+function showAuthTab(t){document.querySelectorAll('.auth-tab').forEach(function(x){x.classList.remove('active')});event.target.classList.add('active');if(t==='login'){document.getElementById('login-form').classList.remove('hidden');document.getElementById('register-form').classList.add('hidden');document.getElementById('forgot-form').classList.add('hidden')}else if(t==='register'){document.getElementById('login-form').classList.add('hidden');document.getElementById('register-form').classList.remove('hidden');document.getElementById('forgot-form').classList.add('hidden')}}
+function showForgotPassword(){document.getElementById('login-form').classList.add('hidden');document.getElementById('register-form').classList.add('hidden');document.getElementById('forgot-form').classList.remove('hidden')}
+function handleLogin(e){e.preventDefault();var email=document.getElementById('login-email').value;var pass=document.getElementById('login-password').value;showToast('Logging in...','info');var stored=JSON.parse(localStorage.getItem('solfaia_users')||'{}');if(stored[email]&&stored[email].password===btoa(pass)){currentUser=stored[email];currentUser.email=email}else{currentUser={id:Date.now().toString(),username:email.split('@')[0],name:email.split('@')[0],email:email,xp:0,level:1,streak:0,pfp:'',partner:null,vacation:null,settings:{notifications:true,sound:false,leaderboard:true,feed:true},sharing:{tasks:true,journal:false,dreams:false,lastActive:true}};stored[email]=currentUser;localStorage.setItem('solfaia_users',JSON.stringify(stored))}
+localStorage.setItem('currentUser',JSON.stringify(currentUser));showDashboard();showToast('Welcome back, '+currentUser.name+'!','success');renderActivityFeed();renderLeaderboard()}
+function handleRegister(e){e.preventDefault();var u=document.getElementById('register-username').value;var n=document.getElementById('register-name').value;var em=document.getElementById('register-email').value;var p=document.getElementById('register-password').value;showToast('Creating account...','info');var stored=JSON.parse(localStorage.getItem('solfaia_users')||'{}');if(stored[em]){showToast('Email already registered!','error');return}
+var newUser={id:Date.now().toString(),username:u,name:n,email:em,password:btoa(p),xp:0,level:1,streak:0,pfp:'',createdAt:new Date().toISOString(),partner:null,vacation:null,settings:{notifications:true,sound:false,leaderboard:true,feed:true},sharing:{tasks:true,journal:false,dreams:false,lastActive:true}};stored[em]=newUser;localStorage.setItem('solfaia_users',JSON.stringify(stored));currentUser=newUser;currentUser.email=em;localStorage.setItem('currentUser',JSON.stringify(currentUser));showDashboard();showToast('Welcome to Solfaia, '+n+'!','success')}
+function handleForgotPassword(e){e.preventDefault();showToast('Reset code sent!','success');showAuthTab('login')}
+function logout(){currentUser=null;localStorage.removeItem('currentUser');document.getElementById('dashboard').classList.remove('active');document.getElementById('auth-screen').style.display='flex';showToast('Logged out','info')}
+function showDashboard(){document.getElementById('auth-screen').style.display='none';document.getElementById('dashboard').classList.add('active');updateProfileUI();if(currentUser.vacation){var end=new Date(currentUser.vacation);document.getElementById('vacation-end').textContent=end.toLocaleDateString();document.getElementById('vacation-banner').classList.add('active')}}
+function showSection(s){document.querySelectorAll('.section').forEach(function(x){x.classList.remove('active')});document.querySelectorAll('.nav-item').forEach(function(x){x.classList.remove('active')});document.getElementById('section-'+s).classList.add('active');var navItem=document.querySelector('[data-section="'+s+'"]');if(navItem)navItem.classList.add('active')}
+function updateProfileUI(){if(!currentUser)return;document.getElementById('header-avatar').src=currentUser.pfp||defaultPfp;document.getElementById('profile-avatar').src=currentUser.pfp||defaultPfp;document.getElementById('profile-name').textContent=currentUser.name;document.getElementById('profile-username').textContent='@'+currentUser.username;document.getElementById('profile-xp').textContent=currentUser.xp;document.getElementById('profile-level').textContent=currentUser.level;document.getElementById('profile-streak').textContent=currentUser.streak;document.getElementById('edit-name').value=currentUser.name;document.getElementById('edit-username').value=currentUser.username}
+function handleAvatarUpload(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){currentUser.pfp=ev.target.result;localStorage.setItem('currentUser',JSON.stringify(currentUser));var stored=JSON.parse(localStorage.getItem('solfaia_users')||'{}');stored[currentUser.email]=currentUser;localStorage.setItem('solfaia_users',JSON.stringify(stored));updateProfileUI();showToast('Avatar updated!','success')};r.readAsDataURL(f)}
+function updateProfile(){currentUser.name=document.getElementById('edit-name').value;currentUser.username=document.getElementById('edit-username').value;localStorage.setItem('currentUser',JSON.stringify(currentUser));var stored=JSON.parse(localStorage.getItem('solfaia_users')||'{}');stored[currentUser.email]=currentUser;localStorage.setItem('solfaia_users',JSON.stringify(stored));updateProfileUI();showToast('Profile updated!','success')}
+function logActivity(type,points){if(!currentUser){showToast('Please login first!','error');return}
+currentUser.xp+=points;currentUser.level=Math.floor(currentUser.xp/1000)+1;localStorage.setItem('currentUser',JSON.stringify(currentUser));var stored=JSON.parse(localStorage.getItem('solfaia_users')||'{}');stored[currentUser.email]=currentUser;localStorage.setItem('solfaia_users',JSON.stringify(stored));var activity={id:Date.now().toString(),userId:currentUser.id,username:currentUser.username,name:currentUser.name,pfp:currentUser.pfp,type:type,points:points,time:new Date().toISOString()};var acts=JSON.parse(localStorage.getItem('community_activity')||'[]');acts.unshift(activity);if(acts.length>50)acts=acts.slice(0,50);localStorage.setItem('community_activity',JSON.stringify(acts));updateProfileUI();renderActivityFeed();renderLeaderboard();showNotification(currentUser.name,type,points);showToast('+'+points+' XP earned!','success');if(window.navigator&&navigator.vibrate)navigator.vibrate(50)}
+function renderActivityFeed(){var acts=JSON.parse(localStorage.getItem('community_activity')||'[]');var c=document.getElementById('activity-feed');if(acts.length===0){c.innerHTML='<p style="text-align:center;color:var(--text2)">No activity yet. Be the first!</p>';return}
+c.innerHTML=acts.map(function(a){return'<div class="activity-item"><img class="avatar" src="'+(a.pfp||defaultPfp)+'"><div class="activity-content"><div class="activity-user">'+a.name+'</div><div class="activity-action">'+activityIcons[a.type]+' '+a.type.replace('-',' ')+'</div></div><div class="activity-points">+'+a.points+'</div><div class="activity-time">'+new Date(a.time).toLocaleTimeString()+'</div></div>'}).join('')}
+function renderLeaderboard(){var users=Object.values(JSON.parse(localStorage.getItem('solfaia_users')||'{}')).sort(function(a,b){return b.xp-a.xp}).slice(0,10);var c=document.getElementById('leaderboard-list');c.innerHTML=users.map(function(u,i){var rankClass='';if(i===0)rankClass='gold';else if(i===1)rankClass='silver';else if(i===2)rankClass='bronze';return'<div class="leaderboard-item"><div class="leaderboard-rank '+rankClass+'">'+(i+1)+'</div><img class="avatar" src="'+(u.pfp||defaultPfp)+'"><div class="leaderboard-info"><div class="leaderboard-name">'+u.name+'<span class="leaderboard-level">L'+u.level+'</span></div><div class="leaderboard-xp">'+u.xp.toLocaleString()+' XP</div></div></div>'}).join('')}
+function showNotification(name,action,points){var n=document.getElementById('notification');document.getElementById('notif-name').textContent=name;document.getElementById('notif-action').textContent=activityIcons[action]+' '+action.replace('-',' ');document.getElementById('notif-points').textContent='+'+points;n.classList.add('show');setTimeout(function(){n.classList.remove('show')},20000)}
+function showToast(m,t){t=t||'info';var x=document.getElementById('toast');x.textContent=m;x.className='toast '+t+' show';setTimeout(function(){x.classList.remove('show')},3000)}
+function toggleSetting(el,t){el.classList.toggle('active');if(currentUser){currentUser.settings[t]=el.classList.contains('active');localStorage.setItem('currentUser',JSON.stringify(currentUser));var stored=JSON.parse(localStorage.getItem('solfaia_users')||'{}');stored[currentUser.email]=currentUser;localStorage.setItem('solfaia_users',JSON.stringify(stored))}}
+function toggleShare(el){el.classList.toggle('active');if(currentUser){var key=el.previousElementSibling.textContent.toLowerCase().replace(/[^a-z]/g,'');currentUser.sharing[key]=el.classList.contains('active');localStorage.setItem('currentUser',JSON.stringify(currentUser))}}
+function toggleVacation(el){el.classList.toggle('active');document.getElementById('vacation-days').classList.toggle('hidden',!el.classList.contains('active'));if(currentUser&&el.classList.contains('active')){setVacationDuration()}else if(currentUser){currentUser.vacation=null;document.getElementById('vacation-banner').classList.remove('active');localStorage.setItem('currentUser',JSON.stringify(currentUser))}}
+function setVacationDuration(){if(!currentUser)return;var days=parseInt(document.getElementById('vacation-duration').value);currentUser.vacation=new Date(Date.now()+days*24*60*60*1000).toISOString();document.getElementById('vacation-end').textContent=new Date(currentUser.vacation).toLocaleDateString();document.getElementById('vacation-banner').classList.add('active');localStorage.setItem('currentUser',JSON.stringify(currentUser));showToast('Vacation enabled for '+days+' days!','success')}
+function openPartnerModal(){document.getElementById('partner-modal').classList.add('active')}
+function closePartnerModal(){document.getElementById('partner-modal').classList.remove('active')}
+function searchPartner(){var username=document.getElementById('partner-search').value;var stored=JSON.parse(localStorage.getItem('solfaia_users')||'{}');var found=null;Object.values(stored).forEach(function(u){if(u.username.toLowerCase()===username.toLowerCase())found=u});var result=document.getElementById('partner-search-result');if(found){document.getElementById('search-result-avatar').src=found.pfp||defaultPfp;document.getElementById('search-result-name').textContent=found.name;document.getElementById('search-result-username').textContent='@'+found.username;result.classList.remove('hidden');document.getElementById('partner-search-result').dataset.userId=found.id}else{showToast('User not found','error');result.classList.add('hidden')}}
+function sendPartnerRequest(){showToast('Partner request sent!','success');closePartnerModal()}
+window.onload=function(){var saved=localStorage.getItem('currentUser');if(saved){currentUser=JSON.parse(saved);showDashboard();renderActivityFeed();renderLeaderboard()}}
+</script>
+</body>
+</html>
